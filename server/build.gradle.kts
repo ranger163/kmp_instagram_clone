@@ -4,10 +4,10 @@ plugins {
     application
 }
 
-group = "me.inassar.kmp_instagram_clone"
+group = "me.inassar.server"
 version = "1.0.0"
 application {
-    mainClass.set("me.inassar.kmp_instagram_clone.ApplicationKt")
+    mainClass.set("me.inassar.server.ApplicationKt")
 
     val isDevelopment: Boolean = project.ext.has("development")
     applicationDefaultJvmArgs = listOf("-Dio.ktor.development=$isDevelopment")
@@ -16,8 +16,8 @@ application {
 dependencies {
     implementation(projects.shared)
     implementation(libs.logback)
-    implementation(libs.ktor.serverCore)
-    implementation(libs.ktor.serverNetty)
-    testImplementation(libs.ktor.serverTestHost)
+    implementation(libs.ktor.server.core)
+    implementation(libs.ktor.server.netty)
+    testImplementation(libs.ktor.server.testHost)
     testImplementation(libs.kotlin.testJunit)
 }
