@@ -1,4 +1,4 @@
-package me.inassar.kmp_instagram_clone
+package me.inassar.shared
 
 class Greeting {
     private val platform = getPlatform()
