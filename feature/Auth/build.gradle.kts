@@ -9,6 +9,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -50,10 +51,11 @@ kotlin {
             implementation(libs.bundles.compose.ui)
             api(libs.androidx.lifecycle.viewmodelCompose)
             api(libs.androidx.lifecycle.runtimeCompose)
+            implementation(libs.koin.compose)
 
             api(projects.shared)
             api(projects.core.ui)
-            api(projects.core.di)
+//            api(projects.core.di)
             api(projects.core.navigation)
             api(projects.core.network)
         }

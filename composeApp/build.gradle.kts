@@ -57,7 +57,6 @@ kotlin {
             api(projects.feature.newPost)
             api(projects.feature.likes)
             api(projects.feature.profile)
-            api(projects.core.di)
             api(projects.core.ui)
             api(projects.core.navigation)
             api(projects.core.network)

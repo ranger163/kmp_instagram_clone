@@ -16,6 +16,7 @@ import me.inassar.core.ui.model.BottomBarConfig
 import me.inassar.core.ui.model.TopBarAction
 import me.inassar.core.ui.model.TopBarConfig
 import me.inassar.core.ui.model.UiConfigProvider
+import me.inassar.feature.feed.presentation.ui.FeedScreen
 
 class FeedEntry : FeatureEntry, UiConfigProvider {
 

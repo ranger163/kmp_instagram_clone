@@ -52,7 +52,6 @@ kotlin {
 
             api(projects.shared)
             implementation(projects.core.ui)
-            api(projects.core.di)
             api(projects.core.navigation)
             api(projects.core.network)
         }

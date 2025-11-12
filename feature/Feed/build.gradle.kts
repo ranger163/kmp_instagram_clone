@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias (libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -52,7 +53,6 @@ kotlin {
 
             api(projects.shared)
             implementation(projects.core.ui)
-            api(projects.core.di)
             api(projects.core.navigation)
             api(projects.core.network)
         }

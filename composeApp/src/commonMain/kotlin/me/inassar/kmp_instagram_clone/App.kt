@@ -5,6 +5,8 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import me.inassar.core.navigation.AuthRoute
 import me.inassar.core.ui.AppTheme
+import me.inassar.core.ui.common.AppConfig
+import me.inassar.kmp_instagram_clone.common.getFeatures
 import org.jetbrains.compose.ui.tooling.preview.Preview
 
 @Composable
@@ -14,12 +16,13 @@ fun App(onNavHostReady: suspend (NavController) -> Unit = {}) {
 
     val (featureEntries, uiConfigProviders) = getFeatures()
 
-
     AppTheme(
-        navController = navController,
         onNavHostReady = onNavHostReady,
-        featureEntries = featureEntries,
-        startDestination = AuthRoute,
-        uiConfigProvider = uiConfigProviders
+        appConfig = AppConfig(
+            navController = navController,
+            featureEntries = featureEntries,
+            startDestination = AuthRoute,
+            uiConfigProvider = uiConfigProviders
+        )
     )
 }
