@@ -32,23 +32,13 @@ kotlin {
         commonMain.dependencies {
             // put your Multiplatform dependencies here
             api(libs.bundles.kotlinx)
-            api(libs.bundles.di)
-            api(libs.ktor.client.core)
-            api(libs.ktor.client.logging)
-            api(libs.ktor.client.contentneg)
             api(libs.kermit)
-            api(libs.bundles.database.client)
             api(libs.bundles.ui.media)
+            api(libs.bundles.di)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
-    }
-}
-
-configurations.configureEach {
-    if (name.contains("wasmJs", ignoreCase = true) || name.contains("js", ignoreCase = true)) {
-        exclude("androidx.room")
     }
 }
 

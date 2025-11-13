@@ -16,8 +16,7 @@ import me.inassar.feature.feed.presentation.manipulator.FeedViewmodel
 import org.koin.compose.koinInject
 
 @Composable
-fun FeedScreen() {
-    val viewmodel =  koinInject<FeedViewmodel>()
+fun FeedScreen(viewmodel: FeedViewmodel = koinInject()) {
     val state = viewmodel.state.collectAsStateWithLifecycle().value
     RenderUi(state = state, onAction = viewmodel::onAction)
 }
@@ -45,9 +44,9 @@ fun RenderUi(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Button(onClick = { onAction(FeedEvent.PingBackend) }) {
+        Button(onClick = { onAction(if (state.data == null) FeedEvent.RetrieveFeed else FeedEvent.DeleteLocalFeed) }) {
             if (state.isLoading) CircularProgressIndicator(color = Color.White)
-            else Text("Ping Backend")
+            else Text(if (state.data == null)"Ping Backend" else "Delete Local Feed")
         }
     }
 }

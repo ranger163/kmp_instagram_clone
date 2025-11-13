@@ -14,17 +14,35 @@ class FeedViewmodel(private val repo: FeedRepository) : ViewModel() {
     private val _state: MutableStateFlow<FeedState> = MutableStateFlow(FeedState())
     val state: StateFlow<FeedState> = _state.asStateFlow()
 
+    init {
+        fetchLocalFeed()
+    }
+
+    private fun fetchLocalFeed() {
+        viewModelScope.launch {
+            repo.retrieveLocalFeed().onSuccess { feed ->
+                _state.update { it.copy(data = feed.toUi().response, isLoading = false, error = null) }
+            }
+        }
+    }
+
     fun onAction(action: FeedEvent) {
         when (action) {
-            FeedEvent.PingBackend -> validateBackend()
+            FeedEvent.RetrieveFeed -> validateBackend()
+            FeedEvent.DeleteLocalFeed -> deleteLocalFeed()
         }
+    }
+
+    private fun deleteLocalFeed() = viewModelScope.launch {
+        repo.deleteLocalFeed()
+        _state.update { it.copy(data = null, isLoading = false, error = null) }
     }
 
     private fun validateBackend() {
         _state.update { it.copy(isLoading = true, data = null, error = null) }
 
         viewModelScope.launch {
-            val result = repo.pingBackend()
+            val result = repo.retrieveFeed()
             result
                 .onSuccess { data ->
                     _state.update {

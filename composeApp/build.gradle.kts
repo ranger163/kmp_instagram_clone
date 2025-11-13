@@ -44,6 +44,7 @@ kotlin {
         androidMain.dependencies {
             implementation(compose.preview)
             implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
         }
         commonMain.dependencies {
             implementation(libs.bundles.compose.ui)
@@ -60,6 +61,7 @@ kotlin {
             api(projects.core.ui)
             api(projects.core.navigation)
             api(projects.core.network)
+            api(projects.core.cache)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)

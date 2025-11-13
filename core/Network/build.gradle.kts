@@ -32,16 +32,16 @@ kotlin {
         commonMain.dependencies {
 
             // Koin (DI)
-            implementation(libs.bundles.di)
+            api(libs.bundles.di)
 
             // Ktor Core + JSON Serialization
-            implementation(libs.ktor.client.core)
-            implementation(libs.ktor.client.contentneg)
-            implementation(libs.ktor.serialization.kotlinx)
-            implementation(libs.kotlinx.serialization.json)
+            api(libs.ktor.client.core)
+            api(libs.ktor.client.contentneg)
+            api(libs.ktor.serialization.kotlinx)
+            api(libs.kotlinx.serialization.json)
 
             // Logging (shared API — engine-specific logging happens on platform)
-            implementation(libs.ktor.client.logging)
+            api(libs.ktor.client.logging)
         }
 
         commonTest.dependencies {

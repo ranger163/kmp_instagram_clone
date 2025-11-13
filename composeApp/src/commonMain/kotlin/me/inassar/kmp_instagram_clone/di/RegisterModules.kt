@@ -2,6 +2,7 @@ package me.inassar.kmp_instagram_clone.di
 
 import io.ktor.client.plugins.logging.*
 import io.ktor.http.*
+import me.inassar.core.cache.di.cacheModule
 import me.inassar.core.network.NetworkConfig
 import me.inassar.core.network.networkModule
 import me.inassar.feature.auth.di.authModule
@@ -22,6 +23,6 @@ val appModules = networkModule(
                 println("------------------------")
             }
         }
-    ))
-val featureModules = authModule+ feedModule
+    )) + cacheModule
+val featureModules = authModule + feedModule
 val allModules = appModules + featureModules

@@ -55,6 +55,7 @@ kotlin {
             implementation(projects.core.ui)
             api(projects.core.navigation)
             api(projects.core.network)
+            api(projects.core.cache)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
