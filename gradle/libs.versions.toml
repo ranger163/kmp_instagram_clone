@@ -1,45 +1,255 @@
 [versions]
+# --- Core ---
+kotlin = "2.2.21"
 agp = "8.11.2"
 android-compileSdk = "36"
 android-minSdk = "24"
 android-targetSdk = "36"
+ksp = "2.3.2"
+
+# --- Compose ---
+composeMultiplatform = "1.9.0"
+materialIconsExtended = "1.7.3"
+composeHotReload = "1.0.0-rc02"
+multiplatformNavigation = "2.9.1"
+
+# --- JetBrains / AndroidX ---
 androidx-activity = "1.11.0"
+
 androidx-appcompat = "1.7.1"
 androidx-core = "1.17.0"
+androidx-lifecycle = "2.9.5"
 androidx-espresso = "3.7.0"
-androidx-lifecycle = "2.9.4"
 androidx-testExt = "1.3.0"
-composeHotReload = "1.0.0-beta07"
-composeMultiplatform = "1.9.0"
+
+# --- KotlinX ---
+coroutines = "1.10.2"
+serialization = "1.9.0"
+
+# --- Ktor / Backend ---
+ktor = "3.3.1"
+exposed = "0.61.0"
+postgres = "42.7.8"
+logback = "1.5.19"
+
+# --- Dependency Injection ---
+koin = "4.1.1"
+
+# --- Database ---
+sqlDelight = "2.1.0"
+
+# --- Media / Image ---
+coil = "3.3.0"
+
+# --- Logging ---
+kermit = "2.0.8"
+
+# --- Testing ---
 junit = "4.13.2"
-kotlin = "2.2.20"
-kotlinx-coroutines = "1.10.2"
-ktor = "3.3.0"
-logback = "1.5.18"
+mockk = "1.14.6"
+
+# --- Static Analysis ---
+detekt = "1.23.8"
+ktlint = "13.1.0"
 
 [libraries]
+# --- Kotlin / Coroutines / Serialization ---
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 kotlin-testJunit = { module = "org.jetbrains.kotlin:kotlin-test-junit", version.ref = "kotlin" }
-junit = { module = "junit:junit", version.ref = "junit" }
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+kotlinx-coroutines-swing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "coroutines" }
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "serialization" }
+
+# --- AndroidX / Jetpack ---
 androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "androidx-core" }
-androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
-androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
 androidx-appcompat = { module = "androidx.appcompat:appcompat", version.ref = "androidx-appcompat" }
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidx-activity" }
 androidx-lifecycle-viewmodelCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "androidx-lifecycle" }
 androidx-lifecycle-runtimeCompose = { module = "org.jetbrains.androidx.lifecycle:lifecycle-runtime-compose", version.ref = "androidx-lifecycle" }
-kotlinx-coroutinesSwing = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-swing", version.ref = "kotlinx-coroutines" }
+
+# --- Compose Multiplatform ---
+compose-runtime = { module = "org.jetbrains.compose.runtime:runtime", version.ref = "composeMultiplatform" }
+compose-foundation = { module = "org.jetbrains.compose.foundation:foundation", version.ref = "composeMultiplatform" }
+compose-material3 = { module = "org.jetbrains.compose.material3:material3", version.ref = "composeMultiplatform" }
+compose-ui = { module = "org.jetbrains.compose.ui:ui", version.ref = "composeMultiplatform" }
+compose-resources = { module = "org.jetbrains.compose.components:components-resources", version.ref = "composeMultiplatform" }
+material-extended-icons = { module = "org.jetbrains.compose.material:material-icons-extended", version.ref = "materialIconsExtended" }
+compose-ui-tooling-preview = { module = "org.jetbrains.compose.components:components-ui-tooling-preview", version.ref = "composeMultiplatform" }
+
+# --- Compose Multiplatform Navigation ---
+compose-navigation = { module = "org.jetbrains.androidx.navigation:navigation-compose", version.ref = "multiplatformNavigation" }
+
+# --- Ktor (Client) ---
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-contentneg = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-auth = { module = "io.ktor:ktor-client-auth", version.ref = "ktor" }
+ktor-serialization-kotlinx = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-okhttp = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor" }
+ktor-client-darwin = { module = "io.ktor:ktor-client-darwin", version.ref = "ktor" }
+ktor-client-js = { module = "io.ktor:ktor-client-js", version.ref = "ktor" }
+
+# --- Ktor (Server) ---
+ktor-server-core = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
+ktor-server-netty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
+ktor-server-websockets = { module = "io.ktor:ktor-server-websockets-jvm", version.ref = "ktor" }
+ktor-server-contentneg = { module = "io.ktor:ktor-server-content-negotiation-jvm", version.ref = "ktor" }
+ktor-server-auth = { module = "io.ktor:ktor-server-auth-jvm", version.ref = "ktor" }
+ktor-server-auth-jwt = { module = "io.ktor:ktor-server-auth-jwt-jvm", version.ref = "ktor" }
+ktor-server-cors = { module = "io.ktor:ktor-server-cors-jvm", version.ref = "ktor" }
+ktor-server-compression = { module = "io.ktor:ktor-server-compression-jvm", version.ref = "ktor" }
+ktor-server-call-logging = { module = "io.ktor:ktor-server-call-logging-jvm", version.ref = "ktor" }
+ktor-server-testHost = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
+
+# --- Database / Persistence - Server ---
+exposed-core = { module = "org.jetbrains.exposed:exposed-core", version.ref = "exposed" }
+exposed-dao = { module = "org.jetbrains.exposed:exposed-dao", version.ref = "exposed" }
+exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "exposed" }
+postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
+
+# --- Database / Persistence - Client ---
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-ios-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
+sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+sqldelight-web-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
+
+# --- Dependency Injection ---
+koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
+koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin" }
+koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin" }
+
+# --- Media / Images ---
+coil3 = { module = "io.coil-kt.coil3:coil-compose", version.ref = "coil" }
+
+# --- Logging ---
+kermit = { module = "co.touchlab:kermit", version.ref = "kermit" }
 logback = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
-ktor-serverCore = { module = "io.ktor:ktor-server-core-jvm", version.ref = "ktor" }
-ktor-serverNetty = { module = "io.ktor:ktor-server-netty-jvm", version.ref = "ktor" }
-ktor-serverTestHost = { module = "io.ktor:ktor-server-test-host-jvm", version.ref = "ktor" }
+
+# --- Testing ---
+mockk = { module = "io.mockk:mockk", version.ref = "mockk" }
+junit = { module = "junit:junit", version.ref = "junit" }
+androidx-testExt-junit = { module = "androidx.test.ext:junit", version.ref = "androidx-testExt" }
+androidx-espresso-core = { module = "androidx.test.espresso:espresso-core", version.ref = "androidx-espresso" }
+
+[bundles]
+# --- Compose UI ---
+compose-ui = [
+    "compose-runtime",
+    "compose-foundation",
+    "compose-material3",
+    "compose-ui",
+    "compose-resources",
+    "material-extended-icons",
+    "compose-ui-tooling-preview"
+]
+
+# --- Compose Multiplatform Navigation ---
+compose-navigation = [
+    "compose-navigation"
+]
+
+# --- AndroidX Essentials ---
+androidx-core = [
+    "androidx-core-ktx",
+    "androidx-appcompat",
+    "androidx-activity-compose",
+    "androidx-lifecycle-viewmodelCompose",
+    "androidx-lifecycle-runtimeCompose"
+]
+androidx-lifecycle = [
+    "androidx-lifecycle-viewmodelCompose",
+    "androidx-lifecycle-runtimeCompose"
+]
+
+# --- Ktor Client ---
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-client-contentneg",
+    "ktor-client-auth",
+    "ktor-client-okhttp",
+    "ktor-client-darwin",
+    "ktor-client-js",
+    "ktor-serialization-kotlinx"
+]
+
+# --- Ktor Server ---
+ktor-server = [
+    "ktor-server-core",
+    "ktor-server-netty",
+    "ktor-server-websockets",
+    "ktor-server-contentneg",
+    "ktor-server-auth",
+    "ktor-server-auth-jwt",
+    "ktor-server-cors",
+    "ktor-server-compression",
+    "ktor-server-call-logging"
+]
+
+# --- Database Layer ---
+database-server = [
+    "exposed-core",
+    "exposed-dao",
+    "exposed-jdbc",
+    "postgres"
+]
+
+# --- Dependency Injection ---
+di = [
+    "koin-core",
+    "koin-compose"
+]
+
+# --- Logging ---
+logging = [
+    "kermit",
+    "logback"
+]
+
+# --- Testing ---
+testing = [
+    "junit",
+    "mockk",
+    "androidx-testExt-junit",
+    "androidx-espresso-core"
+]
+
+# --- KotlinX Common ---
+kotlinx = [
+    "kotlinx-coroutines-core",
+    "kotlinx-serialization-json"
+]
+
+# --- UI Media ---
+ui-media = [
+    "coil3"
+]
 
 [plugins]
-androidApplication = { id = "com.android.application", version.ref = "agp" }
-androidLibrary = { id = "com.android.library", version.ref = "agp" }
-composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
+# --- Kotlin / Compose / Android ---
+kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 composeMultiplatform = { id = "org.jetbrains.compose", version.ref = "composeMultiplatform" }
 composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
-kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+composeHotReload = { id = "org.jetbrains.compose.hot-reload", version.ref = "composeHotReload" }
+
+# --- Android Plugins ---
+androidApplication = { id = "com.android.application", version.ref = "agp" }
+androidLibrary = { id = "com.android.library", version.ref = "agp" }
+
+# --- Serialization / Backend / QA ---
 ktor = { id = "io.ktor.plugin", version.ref = "ktor" }
-kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlinSerialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+# --- Static Analysis ---
+ktlint = { id = "org.jlleitschuh.gradle.ktlint", version.ref = "ktlint" }
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
+
+# --- Codegen ---
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+
+# --- sqldelight ---
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }
