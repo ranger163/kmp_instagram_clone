@@ -1,7 +1,7 @@
 package me.inassar.shared
 
 class JsPlatform : Platform {
-    override val name: String = "Web with Kotlin/JS"
+    override val name: PlatformEnum = PlatformEnum.JS
 }
 
 actual fun getPlatform(): Platform = JsPlatform()

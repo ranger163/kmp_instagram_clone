@@ -36,8 +36,7 @@ logback = "1.5.19"
 koin = "4.1.1"
 
 # --- Database ---
-room = "2.8.2"
-sqlite = "2.6.1"
+sqlDelight = "2.1.0"
 
 # --- Media / Image ---
 coil = "3.3.0"
@@ -110,9 +109,12 @@ exposed-jdbc = { module = "org.jetbrains.exposed:exposed-jdbc", version.ref = "e
 postgres = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 
 # --- Database / Persistence - Client ---
-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
+sqldelight-android-driver = { module = "app.cash.sqldelight:android-driver", version.ref = "sqlDelight" }
+sqldelight-ios-driver = { module = "app.cash.sqldelight:native-driver", version.ref = "sqlDelight" }
+sqldelight-jvm-driver = { module = "app.cash.sqldelight:sqlite-driver", version.ref = "sqlDelight" }
+sqldelight-web-driver = { module = "app.cash.sqldelight:web-worker-driver", version.ref = "sqlDelight" }
+sqldelight-coroutines-extensions = { module = "app.cash.sqldelight:coroutines-extensions", version.ref = "sqlDelight" }
+sqldelight-runtime = { module = "app.cash.sqldelight:runtime", version.ref = "sqlDelight" }
 
 # --- Dependency Injection ---
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin" }
@@ -195,11 +197,6 @@ database-server = [
     "postgres"
 ]
 
-database-client = [
-    "sqlite-bundled",
-    "room-runtime"
-]
-
 # --- Dependency Injection ---
 di = [
     "koin-core",
@@ -254,5 +251,5 @@ detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }
 # --- Codegen ---
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
-# --- Room ---
-androidx-room = { id = "androidx.room", version.ref = "room" }
+# --- sqldelight ---
+sqldelight = { id = "app.cash.sqldelight", version.ref = "sqlDelight" }

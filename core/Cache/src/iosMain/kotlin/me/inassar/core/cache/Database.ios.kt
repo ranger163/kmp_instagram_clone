@@ -1,30 +1,20 @@
 package me.inassar.core.cache
 
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import kotlinx.cinterop.ExperimentalForeignApi
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.native.NativeSqliteDriver
+import me.inassar.core.cache.db.AppDatabase
+import org.koin.core.module.Module
 import org.koin.dsl.module
-import platform.Foundation.NSDocumentDirectory
-import platform.Foundation.NSFileManager
-import platform.Foundation.NSUserDomainMask
 
-fun getDataBaseBuilder(): RoomDatabase.Builder<AppDatabase> {
-    val dbFilePath = documentDirectory() + "/database.db"
-    return Room.databaseBuilder<AppDatabase>(name = dbFilePath)
-}
 
-@OptIn(ExperimentalForeignApi::class)
-private fun documentDirectory(): String {
-    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
-        directory = NSDocumentDirectory,
-        inDomain = NSUserDomainMask,
-        appropriateForURL = null,
-        create = false,
-        error = null,
+class IosDatabaseDriver : DatabaseDriverFactory {
+    override fun createDriver(): SqlDriver = NativeSqliteDriver(
+    schema = AppDatabase.Schema,
+    name = "database.db"
     )
-    return requireNotNull(documentDirectory?.path)
 }
 
-actual val platformCacheModule = module {
-    single<RoomDatabase.Builder<AppDatabase>> { getDataBaseBuilder() }
-}
+actual val platformCacheModule: Module
+    get() = module {
+        single<DatabaseDriverFactory> { IosDatabaseDriver() }
+    }

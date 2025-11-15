@@ -1,14 +1,18 @@
 package me.inassar.core.cache.di
 
-import me.inassar.core.cache.AppDatabase
-import me.inassar.core.cache.feature.feed.FeedDao
-import me.inassar.core.cache.getRoomDatabase
+import me.inassar.core.cache.DatabaseDriverFactory
+import me.inassar.core.cache.db.AppDatabase
 import me.inassar.core.cache.platformCacheModule
 import org.koin.dsl.module
 
 val cacheModule = module {
     includes(platformCacheModule)
-    single<AppDatabase> { getRoomDatabase(builder = get()) }
+    single {
+        // create SQLDelight driver per platform
+        val driverFactory: DatabaseDriverFactory = get()
+        AppDatabase(driverFactory.createDriver())
+    }
 
-    single<FeedDao> { get<AppDatabase>().getFeedDao() }
+    // expose FeedQueries
+    single { get<AppDatabase>().feedQueries }
 }

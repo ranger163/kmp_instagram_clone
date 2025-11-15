@@ -13,6 +13,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.inassar.feature.feed.presentation.manipulator.FeedEvent
 import me.inassar.feature.feed.presentation.manipulator.FeedState
 import me.inassar.feature.feed.presentation.manipulator.FeedViewmodel
+import me.inassar.shared.isJsPlatform
 import org.koin.compose.koinInject
 
 @Composable
@@ -44,9 +45,16 @@ fun RenderUi(
             Spacer(modifier = Modifier.height(12.dp))
         }
 
-        Button(onClick = { onAction(if (state.data == null) FeedEvent.RetrieveFeed else FeedEvent.DeleteLocalFeed) }) {
-            if (state.isLoading) CircularProgressIndicator(color = Color.White)
-            else Text(if (state.data == null)"Ping Backend" else "Delete Local Feed")
-        }
+        if (state.data == null)
+            Button(onClick = { onAction(FeedEvent.RetrieveFeed) }) {
+                if (state.isLoading) CircularProgressIndicator(color = Color.White)
+                else Text("Ping Backend")
+            }
+        else
+            if (!isJsPlatform())
+                Button(onClick = { onAction(FeedEvent.DeleteLocalFeed) }) {
+                    if (state.isLoading) CircularProgressIndicator(color = Color.White)
+                    else Text("Delete Local Feed")
+                }
     }
 }

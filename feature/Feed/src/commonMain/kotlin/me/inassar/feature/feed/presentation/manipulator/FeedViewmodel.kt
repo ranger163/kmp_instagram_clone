@@ -9,13 +9,15 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import me.inassar.feature.feed.domain.repository.FeedRepository
 import me.inassar.feature.feed.presentation.mapper.toUi
+import me.inassar.shared.isJsPlatform
 
 class FeedViewmodel(private val repo: FeedRepository) : ViewModel() {
     private val _state: MutableStateFlow<FeedState> = MutableStateFlow(FeedState())
     val state: StateFlow<FeedState> = _state.asStateFlow()
 
     init {
-        fetchLocalFeed()
+        if (!isJsPlatform())
+            fetchLocalFeed()
     }
 
     private fun fetchLocalFeed() {

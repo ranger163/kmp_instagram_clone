@@ -1,19 +1,22 @@
 package me.inassar.core.cache
 
 import android.content.Context
-import androidx.room.Room
-import androidx.room.RoomDatabase
+import app.cash.sqldelight.db.SqlDriver
+import app.cash.sqldelight.driver.android.AndroidSqliteDriver
+import me.inassar.core.cache.db.AppDatabase
+import org.koin.core.module.Module
 import org.koin.dsl.module
 
-fun getDataBaseBuilder(context: Context): RoomDatabase.Builder<AppDatabase> {
-    val appContext = context.applicationContext ?: throw IllegalStateException("Not yet initialized")
-    val dbFile = appContext.getDatabasePath("database.db")
-    return Room.databaseBuilder<AppDatabase>(
-        context = appContext,
-        name = dbFile.absolutePath
-    )
+class AndroidDatabaseDriver( val context: Context) : DatabaseDriverFactory {
+    override fun createDriver(): SqlDriver =
+        AndroidSqliteDriver(
+            schema = AppDatabase.Schema,
+            context = context,
+            name = "database.db"
+        )
 }
 
-actual val platformCacheModule = module {
-    single<RoomDatabase.Builder<AppDatabase>> { getDataBaseBuilder(get()) }
-}
+actual val platformCacheModule: Module
+    get() = module {
+        single<DatabaseDriverFactory> { AndroidDatabaseDriver(get()) }
+    }

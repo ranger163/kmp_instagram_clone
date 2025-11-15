@@ -1,7 +1,7 @@
 package me.inassar.shared
 
 interface Platform {
-    val name: String
+    val name: PlatformEnum
 }
 
 expect fun getPlatform(): Platform

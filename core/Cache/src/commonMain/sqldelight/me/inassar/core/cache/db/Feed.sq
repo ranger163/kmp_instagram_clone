@@ -1,0 +1,18 @@
+-- CacheDatabase
+CREATE TABLE IF NOT EXISTS feed(
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+  method TEXT NOT NULL,
+  status TEXT NOT NULL
+);
+
+-- Insert a feed row
+insertFeed:
+INSERT INTO feed(method, status) VALUES (?,?);
+
+-- Get latest feed
+selectLatestFeed:
+SELECT * FROM feed ORDER BY id DESC LIMIT 1;
+
+-- Delete all feed rows
+deleteAllFeed:
+DELETE FROM feed;
