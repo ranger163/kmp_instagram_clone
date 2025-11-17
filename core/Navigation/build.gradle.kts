@@ -15,6 +15,7 @@ kotlin {
         }
     }
 
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -31,7 +32,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
             api(libs.bundles.compose.navigation)
             api(libs.koin.core)
             api(libs.kotlinx.serialization.json)

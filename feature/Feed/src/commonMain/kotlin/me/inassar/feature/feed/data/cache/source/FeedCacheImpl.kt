@@ -1,22 +1,23 @@
 package me.inassar.feature.feed.data.cache.source
 
 import app.cash.sqldelight.coroutines.asFlow
+import app.cash.sqldelight.coroutines.mapToOneOrNull
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
 import me.inassar.core.cache.db.Feed
 import me.inassar.core.cache.db.FeedQueries
 import me.inassar.feature.feed.data.cache.FeedCache
+import me.inassar.shared.helpers.DispatcherProvider
 
-class FeedCacheImpl(private val queries: FeedQueries) : FeedCache {
-    override suspend fun insertFeed(feedEntity: Feed) {
-        queries.insertFeed(method = feedEntity.method, status = feedEntity.status)
+class FeedCacheImpl(
+    private val queries: FeedQueries,
+    private val dispatcher: DispatcherProvider
+) : FeedCache {
+    override suspend fun insertFeed(method: String, status: String) {
+        queries.insertFeed(method = method, status = status)
     }
 
-    override fun getFeed(): Flow<Feed?> = flow {
-        emit(queries.selectLatestFeed().asFlow().map { query -> query.executeAsOneOrNull() }.firstOrNull())
-    }
+    override fun getFeed(): Flow<Feed?> =
+        queries.selectLatestFeed().asFlow().mapToOneOrNull(dispatcher.default)
 
     override suspend fun deleteFeed() {
         queries.deleteAllFeed()

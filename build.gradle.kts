@@ -8,6 +8,7 @@ plugins {
     alias(libs.plugins.composeHotReload) apply false
     alias(libs.plugins.composeCompiler) apply false
     alias(libs.plugins.kotlinJvm) apply false
+    alias (libs.plugins.atomicfu) apply false
     alias(libs.plugins.ksp) apply false
     alias(libs.plugins.ktlint) apply false
     alias(libs.plugins.detekt)

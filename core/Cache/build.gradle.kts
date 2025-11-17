@@ -4,7 +4,6 @@ import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
-    alias(libs.plugins.ksp)
     alias(libs.plugins.sqldelight)
 }
 
@@ -15,15 +14,10 @@ kotlin {
         }
     }
 
-    listOf(
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-        iosTarget.binaries.framework {
-            baseName = "Cache"
-            isStatic = true
-        }
-    }
+
+    iosX64()
+    iosArm64()
+    iosSimulatorArm64()
 
     jvm()
 
@@ -44,7 +38,6 @@ kotlin {
             api(libs.sqldelight.runtime)
             api(libs.sqldelight.coroutines.extensions)
             api(libs.kotlinx.serialization.json)
-            api(libs.bundles.database.client)
             api(projects.shared)
         }
         commonTest.dependencies {
@@ -53,11 +46,23 @@ kotlin {
         iosMain.dependencies { api(libs.sqldelight.ios.driver) }
         jvmMain.dependencies { api(libs.sqldelight.jvm.driver) }
         jsMain.dependencies {
-            api(libs.sqldelight.web.driver)
+            implementation(libs.sqldelight.web.driver)
+            implementation(
+                npm(
+                    "@cashapp/sqldelight-sqljs-worker",
+                    libs.versions.sqlDelight.get()
+                )
+            )
         }
 
         wasmJsMain.dependencies {
             api(libs.sqldelight.web.driver)
+            implementation(
+                npm(
+                    "@cashapp/sqldelight-sqljs-worker",
+                    libs.versions.sqlDelight.get()
+                )
+            )
         }
 
     }

@@ -1,5 +1,6 @@
 package me.inassar.core.ui.model
 
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.navigation.NavHostController
 import me.inassar.core.navigation.AppRoute
@@ -14,6 +15,7 @@ interface UiConfigProvider {
     fun bottomBarConfig(route: AppRoute, navController: NavHostController): BottomBarConfig?
 }
 
+@Stable
 data class TopBarConfig(
     val title: String = "",
     val showNavigationIcon: Boolean = false,
@@ -27,6 +29,7 @@ data class TopBarAction(
     val onClick: () -> Unit
 )
 
+@Stable
 data class BottomBarConfig(
     val items: List<BottomNavItem> = emptyList(),
     val selectedIndex: Int = 0,

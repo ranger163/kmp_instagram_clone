@@ -1,7 +1,21 @@
 package me.inassar.shared
 
-class JsPlatform : Platform {
-    override val name: PlatformEnum = PlatformEnum.JS
+import kotlinx.coroutines.Dispatchers
+import me.inassar.shared.helpers.DeviceCapabilities
+import me.inassar.shared.helpers.DispatcherProvider
+import me.inassar.shared.helpers.PlatformCapabilitiesProvider
+import me.inassar.shared.helpers.PlatformEnum
+
+class JsCapabilitiesProvider : PlatformCapabilitiesProvider {
+    override fun getCapabilities(): DeviceCapabilities = DeviceCapabilities(
+        platform = PlatformEnum.JS,
+        supportsLocalCache = false
+    )
 }
 
-actual fun getPlatform(): Platform = JsPlatform()
+class JsDispatcherProvider : DispatcherProvider {
+    override val io = Dispatchers.Default
+    override val default = Dispatchers.Default
+    override val main = Dispatchers.Default
+
+}

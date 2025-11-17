@@ -7,6 +7,7 @@ import me.inassar.core.network.NetworkConfig
 import me.inassar.core.network.networkModule
 import me.inassar.feature.auth.di.authModule
 import me.inassar.feature.feed.di.feedModule
+import me.inassar.shared.di.sharedModule
 
 val appModules = networkModule(
     config = NetworkConfig(
@@ -23,6 +24,6 @@ val appModules = networkModule(
                 println("------------------------")
             }
         }
-    )) + cacheModule
+    )) + sharedModule + cacheModule
 val featureModules = authModule + feedModule
 val allModules = appModules + featureModules

@@ -5,6 +5,7 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -13,12 +14,11 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import me.inassar.feature.feed.presentation.manipulator.FeedEvent
 import me.inassar.feature.feed.presentation.manipulator.FeedState
 import me.inassar.feature.feed.presentation.manipulator.FeedViewmodel
-import me.inassar.shared.isJsPlatform
 import org.koin.compose.koinInject
 
 @Composable
 fun FeedScreen(viewmodel: FeedViewmodel = koinInject()) {
-    val state = viewmodel.state.collectAsStateWithLifecycle().value
+    val state by viewmodel.state.collectAsStateWithLifecycle()
     RenderUi(state = state, onAction = viewmodel::onAction)
 }
 
@@ -48,13 +48,11 @@ fun RenderUi(
         if (state.data == null)
             Button(onClick = { onAction(FeedEvent.RetrieveFeed) }) {
                 if (state.isLoading) CircularProgressIndicator(color = Color.White)
-                else Text("Ping Backend")
+                else Text("Get Data")
             }
-        else
-            if (!isJsPlatform())
-                Button(onClick = { onAction(FeedEvent.DeleteLocalFeed) }) {
-                    if (state.isLoading) CircularProgressIndicator(color = Color.White)
-                    else Text("Delete Local Feed")
-                }
+        else if (state.capabilities.supportsLocalCache)
+            Button(onClick = { onAction(FeedEvent.DeleteLocalFeed) }) {
+                Text("Delete Cache")
+            }
     }
 }
