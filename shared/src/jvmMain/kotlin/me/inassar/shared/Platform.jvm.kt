@@ -1,7 +1,21 @@
 package me.inassar.shared
 
-class JVMPlatform : Platform {
-    override val name: PlatformEnum = PlatformEnum.DESKTOP
+import kotlinx.coroutines.Dispatchers
+import me.inassar.shared.helpers.DeviceCapabilities
+import me.inassar.shared.helpers.DispatcherProvider
+import me.inassar.shared.helpers.PlatformCapabilitiesProvider
+import me.inassar.shared.helpers.PlatformEnum
+
+class JvmCapabilitiesProvider : PlatformCapabilitiesProvider {
+    override fun getCapabilities(): DeviceCapabilities = DeviceCapabilities(
+        platform = PlatformEnum.DESKTOP,
+        supportsLocalCache = true
+    )
 }
 
-actual fun getPlatform(): Platform = JVMPlatform()
+class JvmDispatcherProvider : DispatcherProvider {
+    override val io = Dispatchers.IO
+    override val default = Dispatchers.Default
+    override val main = Dispatchers.Default
+
+}

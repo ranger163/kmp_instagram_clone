@@ -1,7 +1,6 @@
 package me.inassar.shared
 
-interface Platform {
-    val name: PlatformEnum
-}
+import org.koin.core.module.Module
 
-expect fun getPlatform(): Platform
+expect val platformCapabilitiesProviderModule: Module
+expect val dispatcherProviderModule: Module

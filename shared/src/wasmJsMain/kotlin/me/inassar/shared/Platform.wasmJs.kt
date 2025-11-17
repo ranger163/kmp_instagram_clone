@@ -1,7 +1,23 @@
 package me.inassar.shared
 
-class WasmPlatform : Platform {
-    override val name: PlatformEnum = PlatformEnum.WASM_JS
+import kotlinx.coroutines.Dispatchers
+import me.inassar.shared.helpers.DeviceCapabilities
+import me.inassar.shared.helpers.DispatcherProvider
+import me.inassar.shared.helpers.PlatformCapabilitiesProvider
+import me.inassar.shared.helpers.PlatformEnum
+
+class WasmJsCapabilitiesProvider : PlatformCapabilitiesProvider {
+    override fun getCapabilities(): DeviceCapabilities =
+        DeviceCapabilities(
+            platform = PlatformEnum.WASM_JS,
+            supportsLocalCache = false
+        )
 }
 
-actual fun getPlatform(): Platform = WasmPlatform()
+
+class WasmJsDispatcherProvider : DispatcherProvider {
+    override val io = Dispatchers.Default
+    override val default = Dispatchers.Default
+    override val main = Dispatchers.Default
+
+}

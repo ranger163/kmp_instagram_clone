@@ -11,8 +11,16 @@ import org.koin.dsl.module
 
 
 val feedModule = module {
-    single<FeedRemoteApi> { FeedRemoteApiImpl(get()) }
-    single<FeedCache> { FeedCacheImpl(get()) }
-    single<FeedRepository> { FeedRepositoryImpl(get(), get()) }
-    factory { FeedViewmodel(get()) }
+    single<FeedRemoteApi> { FeedRemoteApiImpl(client = get()) }
+    single<FeedCache> { FeedCacheImpl(queries = get(), dispatcher = get()) }
+    single<FeedRepository> {
+        FeedRepositoryImpl(
+            remote = get(),
+            cache = get(),
+            platformCapabilities = get(),
+            dispatcher = get()
+        )
+    }
+
+    factory { FeedViewmodel(repo = get(), platformCapabilities = get(), dispatcher = get()) }
 }

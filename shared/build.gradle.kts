@@ -14,6 +14,7 @@ kotlin {
         }
     }
 
+    iosX64()
     iosArm64()
     iosSimulatorArm64()
 
@@ -30,7 +31,6 @@ kotlin {
 
     sourceSets {
         commonMain.dependencies {
-            // put your Multiplatform dependencies here
             api(libs.bundles.kotlinx)
             api(libs.kermit)
             api(libs.bundles.ui.media)
@@ -45,11 +45,4 @@ kotlin {
 android {
     namespace = "me.inassar.navigation.core"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
-    }
-    defaultConfig {
-        minSdk = libs.versions.android.minSdk.get().toInt()
-    }
 }

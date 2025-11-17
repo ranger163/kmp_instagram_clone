@@ -8,9 +8,11 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
+    alias(libs.plugins.atomicfu)
 }
 
 kotlin {
+
     androidTarget {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
@@ -18,12 +20,27 @@ kotlin {
     }
 
     listOf(
+        iosX64(),
         iosArm64(),
         iosSimulatorArm64()
     ).forEach { iosTarget ->
+
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+
+            export(projects.shared)
+            export(projects.core.cache)
+            export(projects.core.network)
+            export(projects.core.navigation)
+            export(projects.core.ui)
+
+            export(projects.feature.auth)
+            export(projects.feature.feed)
+            export(projects.feature.explore)
+            export(projects.feature.newPost)
+            export(projects.feature.likes)
+            export(projects.feature.profile)
         }
     }
 
@@ -41,14 +58,12 @@ kotlin {
     }
 
     sourceSets {
-        androidMain.dependencies {
-            implementation(compose.preview)
-            implementation(libs.androidx.activity.compose)
-            implementation(libs.koin.android)
-        }
+
         commonMain.dependencies {
             implementation(libs.bundles.compose.ui)
             implementation(libs.bundles.androidx.lifecycle)
+            implementation(libs.kotlinx.atomicfu)
+
             api(libs.bundles.di)
 
             api(projects.shared)
@@ -58,14 +73,23 @@ kotlin {
             api(projects.feature.newPost)
             api(projects.feature.likes)
             api(projects.feature.profile)
+
             api(projects.core.ui)
             api(projects.core.navigation)
             api(projects.core.network)
             api(projects.core.cache)
         }
+
         commonTest.dependencies {
             implementation(libs.kotlin.test)
         }
+
+        androidMain.dependencies {
+            implementation(compose.preview)
+            implementation(libs.androidx.activity.compose)
+            implementation(libs.koin.android)
+        }
+
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
@@ -84,19 +108,15 @@ android {
         versionCode = 1
         versionName = "1.0"
     }
+
     packaging {
-        resources {
-            excludes += "/META-INF/{AL2.0,LGPL2.1}"
-        }
+        resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = false
         }
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_17
-        targetCompatibility = JavaVersion.VERSION_17
     }
 }
 

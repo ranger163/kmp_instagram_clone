@@ -19,7 +19,6 @@ fun AppNavHost(
     ) {
 
         entries.forEach { entry ->
-            println("Registering feature: ${entry::class.simpleName}")
             entry.register(this, navController)
         }
     }
