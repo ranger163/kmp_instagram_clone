@@ -5,6 +5,9 @@ import me.inassar.core.cache.db.AppDatabase
 import me.inassar.core.cache.platformCacheModule
 import org.koin.dsl.module
 
+/**
+ * Shared cache module registering SQLDelight database and feed queries across platforms.
+ */
 val cacheModule = module {
     includes(platformCacheModule)
     single {

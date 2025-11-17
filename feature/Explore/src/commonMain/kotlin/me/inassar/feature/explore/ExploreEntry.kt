@@ -13,12 +13,15 @@ import me.inassar.core.ui.model.BottomBarConfig
 import me.inassar.core.ui.model.TopBarConfig
 import me.inassar.core.ui.model.UiConfigProvider
 
+/** Navigation entry for the explore feature. */
 class ExploreEntry : FeatureEntry, UiConfigProvider {
 
+    /** Registers the explore destination. */
     override fun register(builder: NavGraphBuilder, navController: NavHostController) {
         builder.composable<ExploreRoute> { ExploreScreen() }
     }
 
+    /** Attempts to decode the explore route from the back stack entry. */
     override fun tryCreateRoute(entry: NavBackStackEntry): AppRoute? {
         val routeName = entry.destination.route ?: return null
         if (!routeName.startsWith("Explore")) return null
@@ -31,6 +34,7 @@ class ExploreEntry : FeatureEntry, UiConfigProvider {
         }
     }
 
+    /** Provides an `Explore` title-only top bar. */
     override fun topBarConfig(
         route: AppRoute,
         navController: NavHostController
@@ -43,6 +47,7 @@ class ExploreEntry : FeatureEntry, UiConfigProvider {
         else -> null
     }
 
+    /** Shows the shared bottom bar on explore screens. */
     override fun bottomBarConfig(
         route: AppRoute,
         navController: NavHostController

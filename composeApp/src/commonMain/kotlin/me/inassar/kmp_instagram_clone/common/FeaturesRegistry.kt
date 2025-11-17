@@ -9,6 +9,11 @@ import me.inassar.feature.likes.LikesEntry
 import me.inassar.feature.newPost.NewPostEntry
 import me.inassar.feature.profile.ProfileEntry
 
+/**
+ * Builds the ordered list of feature entries and extracts UI configuration providers.
+ *
+ * @return `Pair` containing the raw feature entries and the subset that exposes [UiConfigProvider].
+ */
 fun getFeatures(): Pair<List<FeatureEntry>, List<UiConfigProvider>> {
     val features: List<FeatureEntry> = listOf(
         AuthEntry(),

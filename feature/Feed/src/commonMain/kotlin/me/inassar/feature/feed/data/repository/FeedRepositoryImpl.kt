@@ -12,6 +12,14 @@ import me.inassar.shared.helpers.DispatcherProvider
 import me.inassar.shared.helpers.PlatformCapabilitiesProvider
 import me.inassar.shared.helpers.logger
 
+/**
+ * Concrete [FeedRepository] that orchestrates remote and cached data sources.
+ *
+ * @property remote Network API used for fetching the feed.
+ * @property cache Local persistence layer storing the latest feed.
+ * @property platformCapabilities Provides platform traits to decide caching behavior.
+ * @property dispatcher Supplies coroutine dispatchers for IO/default work.
+ */
 class FeedRepositoryImpl(
     private val remote: FeedRemoteApi,
     private val cache: FeedCache,
@@ -20,6 +28,7 @@ class FeedRepositoryImpl(
 ) : FeedRepository {
 
 
+    /** Chooses between cached and remote sources based on platform support. */
     override suspend fun retrieveFeed(): Result<DomainFeed> =
         when (platformCapabilities.getCapabilities().supportsLocalCache) {
             false -> pingBackend()
@@ -38,10 +47,12 @@ class FeedRepositoryImpl(
             }
         }
 
+    /** Clears cached feed data regardless of platform support. */
     override suspend fun deleteLocalFeed() {
         cache.deleteFeed()
     }
 
+    /** Attempts to read the cached feed entry, returning a [Result]. */
     private suspend fun retrieveLocalFeed(): Result<DomainFeed> = withContext(dispatcher.io) {
         when (val feed = cache.getFeed().firstOrNull()) {
             null -> Result.failure(Exception("No data found in cache"))
@@ -49,6 +60,7 @@ class FeedRepositoryImpl(
         }
     }
 
+    /** Performs the remote call and maps the DTO into the domain model. */
     private suspend fun pingBackend() =
         remote.pingBackend().mapCatching { it.toDomain() }
 }

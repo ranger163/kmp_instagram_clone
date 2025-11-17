@@ -7,6 +7,9 @@ import androidx.compose.runtime.Composable
 import me.inassar.core.ui.model.TopBarConfig
 
 
+/**
+ * Material3 top app bar that reads its configuration from [TopBarConfig].
+ */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AppBar(config: TopBarConfig) {

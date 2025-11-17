@@ -9,7 +9,9 @@ import me.inassar.feature.feed.domain.repository.FeedRepository
 import me.inassar.feature.feed.presentation.manipulator.FeedViewmodel
 import org.koin.dsl.module
 
-
+/**
+ * Feed feature dependency graph wiring remote, cache, repository, and view model layers.
+ */
 val feedModule = module {
     single<FeedRemoteApi> { FeedRemoteApiImpl(client = get()) }
     single<FeedCache> { FeedCacheImpl(queries = get(), dispatcher = get()) }

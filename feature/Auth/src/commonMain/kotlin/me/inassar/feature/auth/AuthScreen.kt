@@ -10,6 +10,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import me.inassar.core.navigation.FeedRoute
 
+/**
+ * Simple placeholder authentication screen that routes to the feed when the action is tapped.
+ */
 @Composable
 fun AuthScreen(
     onNavigateFeed: (FeedRoute) -> Unit
