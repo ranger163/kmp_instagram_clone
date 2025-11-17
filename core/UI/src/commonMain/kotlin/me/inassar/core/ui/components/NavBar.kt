@@ -17,6 +17,11 @@ import me.inassar.core.ui.model.BottomNavItem
 /**
  * Type-safe destinations for the bottom navigation bar.
  * Each represents a tab and knows which [AppRoute] it navigates to.
+ *
+ * @property label Bottom navigation label shown under the icon.
+ * @property selectedIcon Icon rendered when the destination is active.
+ * @property unselectedIcon Icon rendered when the destination is inactive.
+ * @property route Navigation route associated with the destination.
  */
 sealed class BottomNavDestination(
     val label: String,
@@ -60,6 +65,9 @@ sealed class BottomNavDestination(
     )
 
     companion object {
+        /**
+         * Ordered list of all supported bottom navigation destinations.
+         */
         val all = listOf(Feed, Explore, NewPost, Likes, Profile)
     }
 }
@@ -103,6 +111,9 @@ object BottomNavDefaults {
 }
 
 
+/**
+ * Material3 bottom navigation bar bound to the provided [BottomBarConfig].
+ */
 @Composable
 fun NavBar(config: BottomBarConfig) {
     NavigationBar {

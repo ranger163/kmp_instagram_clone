@@ -13,8 +13,9 @@ import me.inassar.core.ui.components.AppBar
 import me.inassar.core.ui.components.NavBar
 
 /**
- * A reusable, shared Scaffold composable that wraps the NavHost.
- * Each screen’s Scaffold behavior is decided by its own feature module.
+ * Shared scaffold wrapper that hoists navigation, top app bar, and bottom nav behavior.
+ *
+ * @param appConfig Provides nav controller, start destination, feature entries, and UI config providers.
  */
 @Composable
 fun AppScaffold(

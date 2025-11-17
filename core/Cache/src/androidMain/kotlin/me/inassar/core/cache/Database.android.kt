@@ -7,7 +7,16 @@ import me.inassar.core.cache.db.AppDatabase
 import org.koin.core.module.Module
 import org.koin.dsl.module
 
-class AndroidDatabaseDriver( val context: Context) : DatabaseDriverFactory {
+/**
+ * Android-specific SQLDelight driver that relies on `AndroidSqliteDriver`.
+ *
+ * @property context Application context used to open/create the SQLite database file.
+ */
+class AndroidDatabaseDriver(val context: Context) : DatabaseDriverFactory {
+
+    /**
+     * Creates the [SqlDriver] backed by Android's SQLite implementation.
+     */
     override fun createDriver(): SqlDriver =
         AndroidSqliteDriver(
             schema = AppDatabase.Schema,
@@ -16,6 +25,9 @@ class AndroidDatabaseDriver( val context: Context) : DatabaseDriverFactory {
         )
 }
 
+/**
+ * Binds the Android driver factory to the DI graph.
+ */
 actual val platformCacheModule: Module
     get() = module {
         single<DatabaseDriverFactory> { AndroidDatabaseDriver(get()) }

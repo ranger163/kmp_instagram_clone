@@ -7,16 +7,29 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import java.io.File
 
+/**
+ * Stores the absolute path to the SQLite DB used on JVM/desktop targets.
+ */
 private val dbPath = File(
     System.getProperty("user.home"),
     ".kmp-instagram/cache/feed.db"
 ).apply { parentFile?.mkdirs() }.absolutePath
 
+/**
+ * JVM-specific SQLDelight driver that persists data to a file system path.
+ */
 class JvmDatabaseDriver : DatabaseDriverFactory {
+
+    /**
+     * Creates a JDBC-backed SQLite driver and initializes the schema if needed.
+     */
     override fun createDriver(): SqlDriver =
         JdbcSqliteDriver(url = "jdbc:sqlite:$dbPath").also { AppDatabase.Schema.create(it) }
 }
 
+/**
+ * Binds the JVM driver factory for dependency injection.
+ */
 actual val platformCacheModule: Module
     get() = module {
         single<DatabaseDriverFactory> { JvmDatabaseDriver() }

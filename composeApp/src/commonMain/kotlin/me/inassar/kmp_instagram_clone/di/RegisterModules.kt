@@ -9,6 +9,9 @@ import me.inassar.feature.auth.di.authModule
 import me.inassar.feature.feed.di.feedModule
 import me.inassar.shared.di.sharedModule
 
+/**
+ * Core modules shared across platforms (networking, shared utilities, cache).
+ */
 val appModules = networkModule(
     config = NetworkConfig(
         baseUrl = "https://dummyjson.com",
@@ -25,5 +28,13 @@ val appModules = networkModule(
             }
         }
     )) + sharedModule + cacheModule
+
+/**
+ * Feature-specific modules that wire screens with their data/domain dependencies.
+ */
 val featureModules = authModule + feedModule
+
+/**
+ * Convenience aggregation for bootstrapping Koin with a single module list.
+ */
 val allModules = appModules + featureModules

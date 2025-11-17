@@ -13,12 +13,15 @@ import me.inassar.core.ui.model.BottomBarConfig
 import me.inassar.core.ui.model.TopBarConfig
 import me.inassar.core.ui.model.UiConfigProvider
 
+/** Navigation entry for the new post feature. */
 class NewPostEntry : FeatureEntry, UiConfigProvider {
 
+    /** Registers the new post destination. */
     override fun register(builder: NavGraphBuilder, navController: NavHostController) {
         builder.composable<NewPostRoute> { NewPostScreen() }
     }
 
+    /** Attempts to decode the new post route from the nav stack. */
     override fun tryCreateRoute(entry: NavBackStackEntry): AppRoute? {
         val routeName = entry.destination.route ?: return null
         if (!routeName.startsWith("NewPost")) return null
@@ -31,6 +34,7 @@ class NewPostEntry : FeatureEntry, UiConfigProvider {
         }
     }
 
+    /** Provides top bar config for the new post screen. */
     override fun topBarConfig(
         route: AppRoute,
         navController: NavHostController
@@ -43,6 +47,7 @@ class NewPostEntry : FeatureEntry, UiConfigProvider {
         else -> null
     }
 
+    /** Maintains the shared bottom navigation while composing a new post. */
     override fun bottomBarConfig(
         route: AppRoute,
         navController: NavHostController

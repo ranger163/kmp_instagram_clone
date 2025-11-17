@@ -17,12 +17,15 @@ import me.inassar.core.ui.model.TopBarAction
 import me.inassar.core.ui.model.TopBarConfig
 import me.inassar.core.ui.model.UiConfigProvider
 
+/** Navigation entry for the profile feature. */
 class ProfileEntry : FeatureEntry, UiConfigProvider {
 
+    /** Registers the profile destination. */
     override fun register(builder: NavGraphBuilder, navController: NavHostController) {
         builder.composable<ProfileRoute> { ProfileScreen() }
     }
 
+    /** Attempts to decode a profile route from the back stack. */
     override fun tryCreateRoute(entry: NavBackStackEntry): AppRoute? {
         val routeName = entry.destination.route ?: return null
         if (!routeName.startsWith("Profile")) return null
@@ -35,6 +38,7 @@ class ProfileEntry : FeatureEntry, UiConfigProvider {
         }
     }
 
+    /** Provides the profile screen top bar with logout action. */
     override fun topBarConfig(
         route: AppRoute,
         navController: NavHostController
@@ -56,6 +60,7 @@ class ProfileEntry : FeatureEntry, UiConfigProvider {
         else -> null
     }
 
+    /** Enables the shared bottom navigation for the profile route. */
     override fun bottomBarConfig(
         route: AppRoute,
         navController: NavHostController

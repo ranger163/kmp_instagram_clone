@@ -18,12 +18,17 @@ import me.inassar.core.ui.model.TopBarConfig
 import me.inassar.core.ui.model.UiConfigProvider
 import me.inassar.feature.feed.presentation.ui.FeedScreen
 
+/**
+ * Navigation entry + UI config provider for the feed feature.
+ */
 class FeedEntry : FeatureEntry, UiConfigProvider {
 
+    /** Registers the `FeedRoute` destination and renders [FeedScreen]. */
     override fun register(builder: NavGraphBuilder, navController: NavHostController) {
         builder.composable<FeedRoute> { FeedScreen() }
     }
 
+    /** Attempts to decode the back stack entry into a strongly typed [FeedRoute]. */
     override fun tryCreateRoute(entry: NavBackStackEntry): AppRoute? {
         val routeName = entry.destination.route ?: return null
         if (!routeName.startsWith("Feed")) return null
@@ -36,6 +41,7 @@ class FeedEntry : FeatureEntry, UiConfigProvider {
         }
     }
 
+    /** Provides a title and action icons while browsing the feed. */
     override fun topBarConfig(
         route: AppRoute,
         navController: NavHostController
@@ -51,6 +57,7 @@ class FeedEntry : FeatureEntry, UiConfigProvider {
         else -> null
     }
 
+    /** Enables the shared bottom navigation when inside the feed route. */
     override fun bottomBarConfig(
         route: AppRoute,
         navController: NavHostController

@@ -16,12 +16,21 @@ import me.inassar.feature.feed.presentation.manipulator.FeedState
 import me.inassar.feature.feed.presentation.manipulator.FeedViewmodel
 import org.koin.compose.koinInject
 
+/**
+ * Entry composable that injects [FeedViewmodel] and renders the feed UI state.
+ */
 @Composable
 fun FeedScreen(viewmodel: FeedViewmodel = koinInject()) {
     val state by viewmodel.state.collectAsStateWithLifecycle()
     RenderUi(state = state, onAction = viewmodel::onAction)
 }
 
+/**
+ * Stateless UI renderer used by previews/tests.
+ *
+ * @param state Current UI model to display.
+ * @param onAction Callback invoked for user actions.
+ */
 @Composable
 fun RenderUi(
     state: FeedState,

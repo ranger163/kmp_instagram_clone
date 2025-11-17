@@ -7,7 +7,14 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
 
+/**
+ * Primary Android activity that hosts the Compose application content.
+ */
 class MainActivity : ComponentActivity() {
+
+    /**
+     * Enables immersive mode and injects the shared [App] composable into the view hierarchy.
+     */
     override fun onCreate(savedInstanceState: Bundle?) {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
@@ -18,6 +25,9 @@ class MainActivity : ComponentActivity() {
     }
 }
 
+/**
+ * Compose tooling preview for Android Studio to quickly render the shared [App].
+ */
 @Preview
 @Composable
 fun AppAndroidPreview() {

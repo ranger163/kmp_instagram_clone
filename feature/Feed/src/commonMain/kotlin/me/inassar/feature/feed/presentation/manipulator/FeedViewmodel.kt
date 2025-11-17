@@ -13,6 +13,13 @@ import me.inassar.feature.feed.presentation.mapper.toUi
 import me.inassar.shared.helpers.DispatcherProvider
 import me.inassar.shared.helpers.PlatformCapabilitiesProvider
 
+/**
+ * Presentation-layer state holder for the feed screen.
+ *
+ * @property repo Repository providing feed data.
+ * @property dispatcher Dispatcher provider to scope coroutine work.
+ * @param platformCapabilities Supplies capability metadata to seed the initial state.
+ */
 @Stable
 class FeedViewmodel(
     private val repo: FeedRepository,
@@ -21,8 +28,11 @@ class FeedViewmodel(
 ) : ViewModel() {
     private val _state: MutableStateFlow<FeedState> =
         MutableStateFlow(FeedState(capabilities = platformCapabilities.getCapabilities()))
+
+    /** Publicly exposed immutable view state for the UI. */
     val state: StateFlow<FeedState> = _state.asStateFlow()
 
+    /** Dispatches UI events to their corresponding handlers. */
     fun onAction(action: FeedEvent) {
         when (action) {
             FeedEvent.RetrieveFeed -> validateBackend()
@@ -30,6 +40,7 @@ class FeedViewmodel(
         }
     }
 
+    /** Runs the feed retrieval pipeline and updates state accordingly. */
     private fun validateBackend() {
         _state.update { it.copy(isLoading = true, data = null, error = null) }
 
@@ -53,11 +64,13 @@ class FeedViewmodel(
         }
     }
 
+    /** Clears the cached feed and resets UI state. */
     private fun deleteLocalFeed() = viewModelScope.launch(dispatcher.default) {
         repo.deleteLocalFeed()
         _state.update { it.copy(data = null, isLoading = false, error = null) }
     }
 
+    /** Formats the UI message depending on whether the payload came from cache or network. */
     private fun message(fromCache: Boolean, response: String): String = when (fromCache) {
         true -> "Data retrieved from cache\nLocal data: $response"
         false -> "Cache empty, fetching from remote\nRemote data: $response"

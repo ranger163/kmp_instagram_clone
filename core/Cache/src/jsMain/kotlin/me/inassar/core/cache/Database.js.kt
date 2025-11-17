@@ -7,7 +7,14 @@ import org.koin.core.module.Module
 import org.koin.dsl.module
 import org.w3c.dom.Worker
 
+/**
+ * JavaScript SQLDelight driver leveraging a WebWorker to host the SQLite runtime.
+ */
 class JsDatabaseDriver : DatabaseDriverFactory {
+
+    /**
+     * Creates a [WebWorkerDriver] and initializes the schema inside the worker context.
+     */
     override fun createDriver(): SqlDriver {
         return WebWorkerDriver(
             Worker(
@@ -17,6 +24,9 @@ class JsDatabaseDriver : DatabaseDriverFactory {
     }
 }
 
+/**
+ * Registers the JS driver factory so cache consumers can depend on [DatabaseDriverFactory].
+ */
 actual val platformCacheModule: Module
     get() = module {
         single<DatabaseDriverFactory> { JsDatabaseDriver() }
