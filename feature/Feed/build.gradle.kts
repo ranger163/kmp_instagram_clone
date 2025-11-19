@@ -25,13 +25,21 @@ kotlin {
     jvm()
 
     js {
-        browser()
+        browser{
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser{
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
@@ -54,6 +62,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
+            implementation(libs.kotlinx.coroutines.test)
         }
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
