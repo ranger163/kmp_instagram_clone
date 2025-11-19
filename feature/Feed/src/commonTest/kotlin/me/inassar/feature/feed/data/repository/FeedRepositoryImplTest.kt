@@ -1,11 +1,7 @@
 package me.inassar.feature.feed.data.repository
 
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.runTest
 import me.inassar.core.cache.db.Feed
 import me.inassar.feature.feed.FakeFeedCache
@@ -15,18 +11,22 @@ import me.inassar.feature.feed.TestDispatcherProvider
 import me.inassar.feature.feed.data.remote.dto.feed.response.FeedResponseDto
 import me.inassar.shared.helpers.DeviceCapabilities
 import me.inassar.shared.helpers.PlatformEnum
+import kotlin.test.*
 
 class FeedRepositoryImplTest {
+
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `falls back to remote when platform lacks cache support`() = runTest {
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto(method = "GET", status = "ok")))
+    fun `falls back to remote when cache unsupported`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+
+        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto("GET", "ok")))
         val cache = FakeFeedCache()
         val repo = FeedRepositoryImpl(
             remote = remote,
             cache = cache,
             platformCapabilities = FakePlatformCapabilitiesProvider(
-                DeviceCapabilities(platform = PlatformEnum.IOS, supportsLocalCache = false)
+                DeviceCapabilities(PlatformEnum.WASM_JS, supportsLocalCache = false)
             ),
             dispatcher = TestDispatcherProvider(dispatcher)
         )
@@ -42,19 +42,20 @@ class FeedRepositoryImplTest {
         assertNull(cache.stored)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `returns cached feed without touching network`() = runTest {
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
-        val cachedFeed = Feed(id = 1, method = "CACHED", status = "ok")
-        val cache = FakeFeedCache(initialFeed = cachedFeed)
-        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto(method = "GET", status = "remote")))
+    fun `returns cached feed when available`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+
+        val cached = Feed(id = 1, method = "CACHED", status = "ok")
+        val cache = FakeFeedCache(cached)
+        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto("GET", "remote")))
         val repo = FeedRepositoryImpl(
-            remote = remote,
-            cache = cache,
-            platformCapabilities = FakePlatformCapabilitiesProvider(
-                DeviceCapabilities(platform = PlatformEnum.ANDROID, supportsLocalCache = true)
+            remote, cache,
+            FakePlatformCapabilitiesProvider(
+                DeviceCapabilities(PlatformEnum.ANDROID, supportsLocalCache = true)
             ),
-            dispatcher = TestDispatcherProvider(dispatcher)
+            TestDispatcherProvider(dispatcher)
         )
 
         val result = repo.retrieveFeed()
@@ -67,44 +68,46 @@ class FeedRepositoryImplTest {
         assertEquals(0, remote.callCount)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `persists remote response when cache empty`() = runTest {
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+    fun `saves remote response when cache empty`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+
         val cache = FakeFeedCache()
-        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto(method = "POST", status = "created")))
+        val remote = FakeFeedRemoteApi(Result.success(FeedResponseDto("POST", "created")))
         val repo = FeedRepositoryImpl(
-            remote = remote,
-            cache = cache,
-            platformCapabilities = FakePlatformCapabilitiesProvider(
-                DeviceCapabilities(platform = PlatformEnum.JS, supportsLocalCache = true)
+            remote, cache,
+            FakePlatformCapabilitiesProvider(
+                DeviceCapabilities(PlatformEnum.DESKTOP, supportsLocalCache = true)
             ),
-            dispatcher = TestDispatcherProvider(dispatcher)
+            TestDispatcherProvider(dispatcher)
         )
 
         val result = repo.retrieveFeed()
-
         assertTrue(result.isSuccess)
+
         val feed = result.getOrThrow()
         assertFalse(feed.fromCache)
         assertEquals("POST", feed.method)
         assertEquals("created", feed.status)
-        assertEquals(1, remote.callCount)
         assertEquals("POST", cache.stored?.method)
         assertEquals("created", cache.stored?.status)
+        assertEquals(1, remote.callCount)
     }
 
+    @OptIn(ExperimentalCoroutinesApi::class)
     @Test
-    fun `propagates remote failure when cache is empty`() = runTest {
-        val dispatcher = UnconfinedTestDispatcher(testScheduler)
+    fun `propagates remote failure when cache empty`() = runTest {
+        val dispatcher = StandardTestDispatcher(testScheduler)
+
         val cache = FakeFeedCache()
         val remote = FakeFeedRemoteApi(Result.failure(IllegalStateException("boom")))
         val repo = FeedRepositoryImpl(
-            remote = remote,
-            cache = cache,
-            platformCapabilities = FakePlatformCapabilitiesProvider(
-                DeviceCapabilities(platform = PlatformEnum.WASM_JS, supportsLocalCache = true)
+            remote, cache,
+            FakePlatformCapabilitiesProvider(
+                DeviceCapabilities(PlatformEnum.IOS, supportsLocalCache = true)
             ),
-            dispatcher = TestDispatcherProvider(dispatcher)
+            TestDispatcherProvider(dispatcher)
         )
 
         val result = repo.retrieveFeed()

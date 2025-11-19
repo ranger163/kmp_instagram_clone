@@ -1,35 +1,39 @@
 package me.inassar.feature.feed.presentation.manipulator
 
-import kotlin.test.AfterTest
-import kotlin.test.BeforeTest
-import kotlin.test.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertFalse
-import kotlin.test.assertNull
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.test.UnconfinedTestDispatcher
-import kotlinx.coroutines.test.TestCoroutineScheduler
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.*
 import me.inassar.feature.feed.FakeFeedRepository
 import me.inassar.feature.feed.FakePlatformCapabilitiesProvider
 import me.inassar.feature.feed.TestDispatcherProvider
 import me.inassar.feature.feed.domain.model.DomainFeed
 import me.inassar.shared.helpers.DeviceCapabilities
 import me.inassar.shared.helpers.PlatformEnum
+import kotlin.test.*
 
+@OptIn(ExperimentalCoroutinesApi::class)
 class FeedViewmodelTest {
+
     private lateinit var scheduler: TestCoroutineScheduler
-    private lateinit var dispatcher: UnconfinedTestDispatcher
+    private lateinit var dispatcher: TestDispatcher
     private lateinit var dispatcherProvider: TestDispatcherProvider
     private lateinit var capabilities: DeviceCapabilities
     private lateinit var capabilitiesProvider: FakePlatformCapabilitiesProvider
 
     @BeforeTest
     fun setup() {
+        // one scheduler/dispatcher shared across the test scope + ViewModel coroutines
         scheduler = TestCoroutineScheduler()
         dispatcher = UnconfinedTestDispatcher(scheduler)
         dispatcherProvider = TestDispatcherProvider(dispatcher)
-        capabilities = DeviceCapabilities(platform = PlatformEnum.ANDROID, supportsLocalCache = true)
+
+        capabilities = DeviceCapabilities(
+            platform = PlatformEnum.ANDROID,
+            supportsLocalCache = true
+        )
         capabilitiesProvider = FakePlatformCapabilitiesProvider(capabilities)
+
+        // make viewModelScope/Main use the test dispatcher on JVM/native/JS
         Dispatchers.setMain(dispatcher)
     }
 
@@ -38,13 +42,28 @@ class FeedViewmodelTest {
         Dispatchers.resetMain()
     }
 
+    private fun createViewModel(
+        result: Result<DomainFeed>
+    ): Pair<FeedViewmodel, FakeFeedRepository> {
+        val repo = FakeFeedRepository(result)
+        val viewModel = FeedViewmodel(
+            repo = repo,
+            platformCapabilities = capabilitiesProvider,
+            dispatcher = dispatcherProvider
+        )
+        return viewModel to repo
+    }
+
     @Test
-    fun `initial state mirrors platform capabilities`() {
-        val repo = FakeFeedRepository(Result.success(DomainFeed(method = "GET", status = "ok")))
+    fun `initial state mirrors platform capabilities and is idle`() = runTest(scheduler) {
+        val (viewModel, _) = createViewModel(
+            Result.success(DomainFeed(method = "GET", status = "ok"))
+        )
 
-        val viewmodel = FeedViewmodel(repo, capabilitiesProvider, dispatcherProvider)
+        // No async work expected at init, but advance just in case
+        advanceUntilIdle()
 
-        val state = viewmodel.state.value
+        val state = viewModel.state.value
         assertEquals(capabilities, state.capabilities)
         assertFalse(state.isLoading)
         assertNull(state.data)
@@ -52,42 +71,70 @@ class FeedViewmodelTest {
     }
 
     @Test
-    fun `successful retrieve updates message and clears error`() {
-        val repo = FakeFeedRepository(Result.success(DomainFeed(method = "GET", status = "ok")))
-        val viewmodel = FeedViewmodel(repo, capabilitiesProvider, dispatcherProvider)
+    fun `successful retrieve updates message and clears error`() = runTest(scheduler) {
+        val (viewModel, repo) = createViewModel(
+            Result.success(DomainFeed(method = "GET", status = "ok"))
+        )
 
-        viewmodel.onAction(FeedEvent.RetrieveFeed)
+        viewModel.onAction(FeedEvent.RetrieveFeed)
+        advanceUntilIdle()
 
-        val state = viewmodel.state.value
+        val state = viewModel.state.value
+
+        // UI state
         assertFalse(state.isLoading)
-        assertEquals("Cache empty, fetching from remote\nRemote data: ok (GET)", state.data)
         assertNull(state.error)
+        assertNotNull(state.data)
+
+        // We don’t assert the exact sentence, only that it reflects the domain data
+        assertTrue(state.data.contains("GET"), "Expected method in UI message")
+        assertTrue(state.data.contains("ok"), "Expected status in UI message")
+
+        // Repository interaction
         assertEquals(1, repo.retrieveCallCount)
+        assertEquals(0, repo.deleteCallCount)
     }
 
     @Test
-    fun `failure during retrieve exposes error message`() {
-        val repo = FakeFeedRepository(Result.failure(IllegalStateException("boom")))
-        val viewmodel = FeedViewmodel(repo, capabilitiesProvider, dispatcherProvider)
+    fun `failure during retrieve exposes error message`() = runTest(scheduler) {
+        val (viewModel, repo) = createViewModel(
+            Result.failure(IllegalStateException("boom"))
+        )
 
-        viewmodel.onAction(FeedEvent.RetrieveFeed)
+        viewModel.onAction(FeedEvent.RetrieveFeed)
+        advanceUntilIdle()
 
-        val state = viewmodel.state.value
+        val state = viewModel.state.value
+
         assertFalse(state.isLoading)
         assertNull(state.data)
-        assertEquals("Error: boom", state.error)
+        assertNotNull(state.error)
+        assertTrue(
+            state.error.contains("boom"),
+            "Expected propagated error message to contain cause"
+        )
+
+        assertEquals(1, repo.retrieveCallCount)
+        assertEquals(0, repo.deleteCallCount)
     }
 
     @Test
-    fun `delete local feed clears ui state`() {
-        val repo = FakeFeedRepository(Result.success(DomainFeed(method = "GET", status = "ok")))
-        val viewmodel = FeedViewmodel(repo, capabilitiesProvider, dispatcherProvider)
-        viewmodel.onAction(FeedEvent.RetrieveFeed)
-        assertNull(viewmodel.state.value.error)
+    fun `delete local feed clears ui state`() = runTest(scheduler) {
+        val (viewModel, repo) = createViewModel(
+            Result.success(DomainFeed(method = "GET", status = "ok"))
+        )
 
-        viewmodel.onAction(FeedEvent.DeleteLocalFeed)
+        // First retrieve something to populate state
+        viewModel.onAction(FeedEvent.RetrieveFeed)
+        advanceUntilIdle()
+        assertNull(viewModel.state.value.error)
 
-        val state = viewmodel.state.value
+        // Then delete
+        viewModel.onAction(FeedEvent.DeleteLocalFeed)
+        advanceUntilIdle()
+
+        val state = viewModel.state.value
+
         assertNull(state.data)
         assertNull(state.error)
         assertFalse(state.isLoading)

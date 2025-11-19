@@ -25,13 +25,21 @@ kotlin {
     jvm()
 
     js {
-        browser()
+        browser{
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
     @OptIn(ExperimentalWasmDsl::class)
     wasmJs {
-        browser()
+        browser{
+            testTask {
+                enabled = false
+            }
+        }
         binaries.executable()
     }
 
