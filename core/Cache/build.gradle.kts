@@ -1,36 +1,11 @@
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.sqldelight)
+    alias(libs.plugins.kmp.targets)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    jvm()
-
-    js {
-        browser()
-        binaries.executable()
-    }
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
 
     sourceSets {
         androidMain.dependencies { api(libs.sqldelight.android.driver) }
@@ -75,7 +50,7 @@ android {
 
 sqldelight {
     databases {
-        create(name = "AppDatabase") {
+        create(name = "AppDatabase").apply {
             packageName.set("me.inassar.core.cache.db")
         }
     }

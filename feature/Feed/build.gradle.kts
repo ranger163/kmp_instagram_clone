@@ -1,48 +1,14 @@
-
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidLibrary)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
-    alias (libs.plugins.kotlinSerialization)
+    alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.kmp.targets)
 }
 
 kotlin {
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
-        }
-    }
-
-    iosX64()
-    iosArm64()
-    iosSimulatorArm64()
-
-    jvm()
-
-    js {
-        browser{
-            testTask {
-                enabled = false
-            }
-        }
-        binaries.executable()
-    }
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser{
-            testTask {
-                enabled = false
-            }
-        }
-        binaries.executable()
-    }
-
     sourceSets {
         androidMain.dependencies {
             implementation(compose.preview)
