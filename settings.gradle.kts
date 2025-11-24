@@ -2,6 +2,7 @@ rootProject.name = "kmp_instagram_clone"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
+    includeBuild("build-logic")
     repositories {
         google {
             mavenContent {
@@ -32,16 +33,20 @@ plugins {
     id("org.gradle.toolchains.foojay-resolver-convention") version "1.0.0"
 }
 
-include(":shared")
-include(":composeApp")
-include(":feature:Auth")
-include(":feature:Feed")
-include(":feature:Explore")
-include(":feature:NewPost")
-include(":feature:Likes")
-include(":feature:Profile")
-include(":core:UI")
-include(":core:Navigation")
-include(":core:Network")
-include(":core:Cache")
-include(":server")
+//include("build-logic")
+
+include(
+    ":shared",
+    ":composeApp",
+    ":feature:Auth",
+    ":feature:Feed",
+    ":feature:Explore",
+    ":feature:NewPost",
+    ":feature:Likes",
+    ":feature:Profile",
+    ":core:UI",
+    ":core:Navigation",
+    ":core:Network",
+    ":core:Cache",
+    ":server"
+)

@@ -1,6 +1,6 @@
+import convention.KmpMultiplatformConventionPlugin
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
-import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -9,53 +9,33 @@ plugins {
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.composeHotReload)
     alias(libs.plugins.atomicfu)
+    alias(libs.plugins.kmp.targets)
 }
 
 kotlin {
 
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_17)
+    KmpMultiplatformConventionPlugin()
+
+    targets.withType<KotlinNativeTarget>()
+        .matching { it.konanTarget.family.isAppleFamily }.configureEach {
+            binaries.framework {
+                baseName = "ComposeApp"
+                isStatic = true
+
+                export(projects.shared)
+                export(projects.core.cache)
+                export(projects.core.network)
+                export(projects.core.navigation)
+                export(projects.core.ui)
+
+                export(projects.feature.auth)
+                export(projects.feature.feed)
+                export(projects.feature.explore)
+                export(projects.feature.newPost)
+                export(projects.feature.likes)
+                export(projects.feature.profile)
+            }
         }
-    }
-
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
-
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
-
-            export(projects.shared)
-            export(projects.core.cache)
-            export(projects.core.network)
-            export(projects.core.navigation)
-            export(projects.core.ui)
-
-            export(projects.feature.auth)
-            export(projects.feature.feed)
-            export(projects.feature.explore)
-            export(projects.feature.newPost)
-            export(projects.feature.likes)
-            export(projects.feature.profile)
-        }
-    }
-
-    jvm()
-
-    js {
-        browser()
-        binaries.executable()
-    }
-
-    @OptIn(ExperimentalWasmDsl::class)
-    wasmJs {
-        browser()
-        binaries.executable()
-    }
 
     sourceSets {
 
