@@ -1,4 +1,6 @@
+import convention.KmpMultiplatformConventionPlugin
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
+import org.jetbrains.kotlin.gradle.plugin.mpp.KotlinNativeTarget
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -12,30 +14,28 @@ plugins {
 
 kotlin {
 
-    listOf(
-        iosX64(),
-        iosArm64(),
-        iosSimulatorArm64()
-    ).forEach { iosTarget ->
+    KmpMultiplatformConventionPlugin()
 
-        iosTarget.binaries.framework {
-            baseName = "ComposeApp"
-            isStatic = true
+    targets.withType<KotlinNativeTarget>()
+        .matching { it.konanTarget.family.isAppleFamily }.configureEach {
+            binaries.framework {
+                baseName = "ComposeApp"
+                isStatic = true
 
-            export(projects.shared)
-            export(projects.core.cache)
-            export(projects.core.network)
-            export(projects.core.navigation)
-            export(projects.core.ui)
+                export(projects.shared)
+                export(projects.core.cache)
+                export(projects.core.network)
+                export(projects.core.navigation)
+                export(projects.core.ui)
 
-            export(projects.feature.auth)
-            export(projects.feature.feed)
-            export(projects.feature.explore)
-            export(projects.feature.newPost)
-            export(projects.feature.likes)
-            export(projects.feature.profile)
+                export(projects.feature.auth)
+                export(projects.feature.feed)
+                export(projects.feature.explore)
+                export(projects.feature.newPost)
+                export(projects.feature.likes)
+                export(projects.feature.profile)
+            }
         }
-    }
 
     sourceSets {
 
