@@ -1,14 +1,12 @@
 package me.inassar.feature.feed.data.repository
 
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.withContext
 import me.inassar.feature.feed.data.cache.FeedCache
 import me.inassar.feature.feed.data.remote.FeedRemoteApi
 import me.inassar.feature.feed.domain.mapper.toCacheParams
 import me.inassar.feature.feed.domain.mapper.toDomain
 import me.inassar.feature.feed.domain.model.DomainFeed
 import me.inassar.feature.feed.domain.repository.FeedRepository
-import me.inassar.shared.helpers.DispatcherProvider
 import me.inassar.shared.helpers.PlatformCapabilitiesProvider
 import me.inassar.shared.helpers.logger
 
@@ -18,13 +16,11 @@ import me.inassar.shared.helpers.logger
  * @property remote Network API used for fetching the feed.
  * @property cache Local persistence layer storing the latest feed.
  * @property platformCapabilities Provides platform traits to decide caching behavior.
- * @property dispatcher Supplies coroutine dispatchers for IO/default work.
  */
 class FeedRepositoryImpl(
     private val remote: FeedRemoteApi,
     private val cache: FeedCache,
     private val platformCapabilities: PlatformCapabilitiesProvider,
-    private val dispatcher: DispatcherProvider
 ) : FeedRepository {
 
 
@@ -32,9 +28,9 @@ class FeedRepositoryImpl(
     override suspend fun retrieveFeed(): Result<DomainFeed> =
         when (platformCapabilities.getCapabilities().supportsLocalCache) {
             false -> pingBackend()
-            true -> withContext(dispatcher.io) {
+            true -> {
                 logger("FeedRepositoryImpl:retrieveFeed").i("Getting data from cache")
-                retrieveLocalFeed().onSuccess { return@withContext Result.success(it) }
+                retrieveLocalFeed().onSuccess { return Result.success(it) }
 
                 logger("FeedRepositoryImpl:retrieveFeed").i("Cache empty, fetching from remote")
                 remote.pingBackend().mapCatching { dto ->
@@ -53,12 +49,11 @@ class FeedRepositoryImpl(
     }
 
     /** Attempts to read the cached feed entry, returning a [Result]. */
-    private suspend fun retrieveLocalFeed(): Result<DomainFeed> = withContext(dispatcher.io) {
+    private suspend fun retrieveLocalFeed(): Result<DomainFeed> =
         when (val feed = cache.getFeed().firstOrNull()) {
             null -> Result.failure(Exception("No data found in cache"))
             else -> Result.success(feed.toDomain(fromCache = true))
         }
-    }
 
     /** Performs the remote call and maps the DTO into the domain model. */
     private suspend fun pingBackend() =

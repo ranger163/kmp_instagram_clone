@@ -73,6 +73,8 @@ kotlin {
         jvmMain.dependencies {
             implementation(compose.desktop.currentOs)
             implementation(libs.kotlinx.coroutines.swing)
+            // Provide an SLF4J binding to avoid "No SLF4J providers were found" on JVM
+            implementation(libs.logback)
         }
     }
 }

@@ -56,7 +56,7 @@ fun RenderUi(
 
         if (state.data == null)
             Button(onClick = { onAction(FeedEvent.RetrieveFeed) }) {
-                if (state.isLoading) CircularProgressIndicator(color = Color.White)
+                if (state.isLoading) CircularProgressIndicator(color = Color.White, modifier = Modifier.size(24.dp))
                 else Text("Get Data")
             }
         else if (state.capabilities.supportsLocalCache)

@@ -23,8 +23,17 @@ class JvmDatabaseDriver : DatabaseDriverFactory {
     /**
      * Creates a JDBC-backed SQLite driver and initializes the schema if needed.
      */
-    override fun createDriver(): SqlDriver =
-        JdbcSqliteDriver(url = "jdbc:sqlite:$dbPath").also { AppDatabase.Schema.create(it) }
+    override fun createDriver(): SqlDriver {
+        val dbFile = File(dbPath)
+        val isNewDb = !dbFile.exists()
+
+        return JdbcSqliteDriver(url = "jdbc:sqlite:$dbPath").also { driver ->
+            // Only run schema creation when the database file is first created.
+            if (isNewDb) {
+                AppDatabase.Schema.create(driver)
+            }
+        }
+    }
 }
 
 /**
