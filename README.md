@@ -1,4 +1,4 @@
-# Kotlin Multiplatform Instagram Clone
+# Kotlin Multiplatform Instagram Clone.
 
 ![Compose Multiplatform](https://img.shields.io/badge/Compose-Multiplatform-blueviolet)
 ![Ktor](https://img.shields.io/badge/Backend-Ktor-orange)
